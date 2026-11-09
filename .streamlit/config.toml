@@ -1,4 +1,9 @@
-[theme]
+# Light and dark themes. The theme switcher is in the ⋮ menu (top right) and the browser
+# remembers the choice. app.py makes Dark the default on a browser's first visit.
+[theme.light]
+primaryColor = "#E8590C"
+
+[theme.dark]
 primaryColor = "#E8590C"
 
 [browser]
@@ -10,4 +15,4 @@ address = "localhost"   # this computer only, not the whole network
 showEmailPrompt = false
 
 [client]
-toolbarMode = "minimal"
+toolbarMode = "viewer"  # keeps the theme switcher, hides developer options

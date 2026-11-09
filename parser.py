@@ -165,7 +165,11 @@ def detect_deck_name(text: str) -> str | None:
 
 def read_text_file(path: Path) -> str:
     """Read a .txt whether it was saved as UTF-8 or a legacy Windows codepage."""
-    data = Path(path).read_bytes()
+    return decode_text(Path(path).read_bytes())
+
+
+def decode_text(data: bytes) -> str:
+    """Decode an uploaded/read file as UTF-8, falling back to a legacy Windows codepage."""
     for encoding in ("utf-8-sig", "cp1250"):
         try:
             return data.decode(encoding)

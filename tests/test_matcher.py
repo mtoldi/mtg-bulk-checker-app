@@ -1,6 +1,6 @@
 import datetime as dt
 
-from matcher import cards_word, check_deck, format_result, request_message
+from matcher import cards_word, check_deck, format_result
 from parser import parse_text
 
 DECK = parse_text(
@@ -66,13 +66,6 @@ def test_format_result():
     )
     assert "\n\nCarol has (1):\n3 Mountain\n" in text
     assert "\n\nAlice has (3):\n1 Command Tower\n1 Molten Gatekeeper\n1 Rumor Gatherer\n" in text
-
-
-def test_request_message():
-    r = check_deck(DECK, BULKS, ignored_names=["Island"])
-    msg = request_message("Alice", "Goblin tokens", r.groups["alice"])
-    assert msg.startswith("Hi Alice! For my Goblin tokens deck")
-    assert "\n1 Molten Gatekeeper\n" in msg
 
 
 def test_cards_word():

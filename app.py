@@ -8,12 +8,38 @@ from __future__ import annotations
 import datetime as dt
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 import storage
-from matcher import CheckResult, aggregate, cards_word, check_deck, format_lines, format_result, request_message
-from parser import detect_deck_name, normalize_name, parse_text, read_text_file
+from matcher import CheckResult, aggregate, cards_word, check_deck, format_lines, format_result
+from parser import decode_text, detect_deck_name, normalize_name, parse_text, read_text_file
 
 st.set_page_config(page_title="Bulk Checker", page_icon="🃏", layout="wide")
+
+
+# --- dark mode by default -------------------------------------------------------------
+# Streamlit remembers the theme picked in the ⋮ menu under this localStorage key and
+# otherwise follows the OS (it stores "System" itself on first load). On a browser's first
+# visit we switch it to "Dark" once, mark that we did, and reload; after that the user's
+# own choice (Light/Dark/System) is always respected.
+# If a future Streamlit renames the key, this silently falls back to the OS theme.
+_DARK_BY_DEFAULT = """
+<script>
+  const w = window.parent;
+  const themeKey = "stActiveTheme-" + w.location.pathname + "-v2";
+  const doneKey = "bulkChecker.darkDefaultApplied";
+  try {
+    if (!w.localStorage.getItem(doneKey)) {
+      w.localStorage.setItem(doneKey, "1");
+      w.localStorage.setItem(themeKey, JSON.stringify("Dark"));
+      w.location.reload();
+    }
+  } catch (e) {}
+</script>
+"""
+if not st.session_state.get("_theme_checked"):
+    components.html(_DARK_BY_DEFAULT, height=0)
+    st.session_state._theme_checked = True
 
 
 # --- loading bulks -------------------------------------------------------------------
@@ -61,10 +87,17 @@ def load_saved_deck() -> None:
         ss.deck_name = detect_deck_name(ss.deck_text) or storage.owner_label(name)
 
 
+def load_uploaded_deck() -> None:
+    # removing the file (×) keeps whatever is in the text box
+    if upload := ss.get("deck_upload"):
+        ss.deck_text = decode_text(upload.getvalue())
+        ss.deck_name = detect_deck_name(ss.deck_text) or storage.owner_label(storage.Path(upload.name).stem)
+
+
 # --- bulks ---------------------------------------------------------------------------------
 
 st.title("🃏 Bulk Checker")
-st.caption("Paste a deck list and see who in your group has which card, and what you still need to get.")
+st.caption("Paste or drop a deck list and see who in your group has which card, and what you still need to get.")
 
 tab_check, tab_results = st.tabs(["🔍 Check deck", "📂 Saved results"])
 
@@ -92,7 +125,7 @@ with tab_check:
             submitted = st.form_submit_button("Save bulk")
         if submitted:
             name = new_name.strip() or (upload.name.rsplit(".", 1)[0] if upload else "")
-            text = upload.getvalue().decode("utf-8-sig", errors="replace") if upload else pasted
+            text = decode_text(upload.getvalue()) if upload else pasted
             if not name:
                 st.error("Enter the person's name.")
             elif not parse_text(text):
@@ -114,6 +147,12 @@ with tab_check:
     # --- deck ------------------------------------------------------------------------------------
 
     st.subheader("Deck list")
+    st.file_uploader(
+        "Drag & drop a deck .txt file here, or paste the list below",
+        type=["txt"],
+        key="deck_upload",
+        on_change=load_uploaded_deck,
+    )
     if decks := storage.deck_files():
         st.selectbox(
             "Load a saved deck from the decks/ folder",
@@ -193,8 +232,6 @@ def render_result(result: CheckResult, deck_name: str, date: dt.date) -> None:
                 st.caption("Not enough: " + ", ".join(partial))
             if shared := [f"{h.name} ({', '.join(labels.get(o, o) for o in h.also)})" for h in hits if h.also]:
                 st.caption("Also with: " + "; ".join(shared))
-            with st.expander(f"✉️ Message for {label}"):
-                st.code(request_message(label, deck_name, hits), language="text", wrap_lines=True)
         i += 1
 
     if result.ignored:

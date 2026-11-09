@@ -137,9 +137,3 @@ def format_result(
             body = format_lines((h.give, h.name) for h in hits)
             parts.append(f"{labels.get(owner, owner)} has ({len(hits)}):\n{body}")
     return "\n\n".join(parts) + "\n"
-
-
-def request_message(label: str, deck_name: str, hits: Iterable[Hit]) -> str:
-    """A short message to a friend listing the cards you'd need from them."""
-    body = format_lines((h.give, h.name) for h in hits)
-    return f"Hi {label}! For my {deck_name} deck I'd need these cards from your bulk:\n\n{body}\n\nThanks!"

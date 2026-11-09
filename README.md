@@ -44,14 +44,17 @@ You get a list per person of the cards they have, plus a **🛒 Need to get** li
 - The number next to a card is how many copies that person can give for this deck, never more than the deck needs.
 - "Need to get" counts the whole group: the deck needs 8 Mountain, Bob has 3, Alice has 2, so you need 3.
 - "Not enough: Mountain 3 / 8" and "Also with: …" show partial and shared cards.
-- **✉️ Message for Alice** gives you a ready-to-send text: "Hi Alice! For my … deck I'd need these cards: …".
 - Every list has a copy icon (it appears when you hover over the list), so you can paste it straight into Moxfield.
 - **💾 Save as .txt** saves the whole result to the `results/` folder, e.g. `example-deck_2026-11-09.txt`.
   The **📂 Saved results** tab lists everything you've saved (newest first), so you can view, copy, download or delete it.
 
 **Skip cards:** cards you don't need to look for, such as basic lands. The list that gets pre-selected lives in
 `config.toml`; you can change it for a single deck in the app.
-Decks you check often can go into the `decks/` folder and be loaded from the dropdown.
+**Adding a deck:** paste the list into the text box, or drag & drop a deck `.txt` file onto the upload box above it
+(the deck name is taken from the file name). Decks you check often can go into the `decks/` folder and be loaded from the dropdown.
+
+**Dark / light mode:** the app starts in dark mode. To switch, open the **⋮** menu (top right) and pick
+**Light**, **Dark** or **System**. Your browser remembers the choice.
 
 ## Line format
 
