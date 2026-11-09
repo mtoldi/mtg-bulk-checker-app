@@ -1,0 +1,9 @@
+# Bulk Checker – settings
+#
+# Cards that are pre-selected in the "Skip cards" box.
+# You can remove them (or add others) for a single deck in the app.
+ignored_cards = [
+    "Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes",
+    "Snow-Covered Plains", "Snow-Covered Island", "Snow-Covered Swamp",
+    "Snow-Covered Mountain", "Snow-Covered Forest",
+]

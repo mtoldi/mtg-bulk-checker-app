@@ -1,0 +1,40 @@
+# Tests on every push; on a "v*" tag (e.g. v1.0.0) also build the portable ZIP
+# and publish it on GitHub Releases.
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Build portable ZIP
+        shell: pwsh
+        run: ./tools/build-portable.ps1 -PythonVersion 3.13.1
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/BulkChecker-windows.zip
+          generate_release_notes: true

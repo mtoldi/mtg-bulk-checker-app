@@ -1,0 +1,14 @@
+# bulks stay local – only the two example bulks go into the repo
+bulks/*
+!bulks/Krleza.txt
+!bulks/ZukaBugar.txt
+results/
+.settings.json
+
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+dist/
+*.spec

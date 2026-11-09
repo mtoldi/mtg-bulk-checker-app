@@ -1,0 +1,13 @@
+[theme]
+primaryColor = "#E8590C"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = false
+address = "localhost"   # this computer only, not the whole network
+showEmailPrompt = false
+
+[client]
+toolbarMode = "minimal"
